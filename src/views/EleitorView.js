@@ -1,39 +1,37 @@
-import TwoDraw from 'https://code.agentscript.org/src/TwoDraw.js'
+import * as util from "https://code.agentscript.org/src/utils.js";
+import TwoDraw from "https://code.agentscript.org/src/TwoDraw.js";
+import Animator from "https://code.agentscript.org/src/Animator.js";
+import Model from "../models/EleitorModel.js";
 
-const View = TwoDraw
+const worldOpts = {
+  minX: -20,
+  maxX: 20,
+  minY: -20,
+  maxY: 20,
+};
 
-// Here we define a color map that we use to color
-// patches in the patchesColor setting further down.
-let myColorMap = ColorMap.gradientColorMap(
-    8, ['black', 'purple', 'yellow']
-)
+const model = new Model(worldOpts); // no arguments => use default world options
+model.setup();
 
-// This is where you configure how your model is
-// rendered to the screen. Try playing around with
-// these settings.
-const viewOpts = {
-    width: 600,
-    drawOptions: {
-        // patchesColor is where you specify what color to
-        // paint each patch. In this case, we are mapping
-        // each patch's pheromone from the range 0 -> 100 to
-        // a color in the color map above
-        patchesColor: (patch) => myColorMap.scaleColor(
-            patch.pheromone, 0, 100
-        ),
+const view = new TwoDraw(model, {
+  div: "modelDiv",
+  patchSize: 20,
+  width: 600,
+  drawOptions: {
+    turtlesSize: 2,
+    turtlesShape: "person",
+    turtlesColor: (t) => model.coloring(t),//(t) => (model.coloring(t.breed.name)),//(t) => (t.breed.name === "bolsonaro" ? "green" : "red"),
+    patchesColor: "black",
+  },
+});
 
-        turtlesSize: 2, // measured in patches
-        
-        // like patchesColor, this can be a color name,
-        // like 'red', a hex code, or a function
-        turtlesColor: 'random',
-        
-        // there are several built-in shapes: arrow, bug,
-        // bug2, circle, dart, frame, frame2, person, person2,
-        // ring, ring2, square, triangle
-        turtlesShape: 'dart'
-    }
-}
+const anim = new Animator(
+  () => {
+    model.step();
+    view.draw();
+  },
+  -1, // -1 = run infinite
+  60 // fps
+);
 
-
-export { View, viewOpts, worldOpts }
+util.toWindow({ util, model, view, anim });

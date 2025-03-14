@@ -49,16 +49,12 @@ class EleitorModel extends Model {
   }
 
   walk(turtle) {
-    let wiggleAngle = 30; // This is an interesting variable to play with
+    let wiggleAngle = 30;
 
-    // We look at three patches: directly ahead, ahead and to the right,
-    // and ahead and to the left of the turtle
-    let patchAhead = turtle.patchAhead(1);
+    // let patchAhead = turtle.patchAhead(1);
     let patchRight = turtle.patchRightAndAhead(wiggleAngle, 1);
     let patchLeft = turtle.patchLeftAndAhead(wiggleAngle, 1);
 
-    // If there's no patch to our right or left (because we're at the edge
-    // of the world) we turn around.
     if (!patchRight) turtle.left(90);
     if (!patchLeft) turtle.right(90);
 
