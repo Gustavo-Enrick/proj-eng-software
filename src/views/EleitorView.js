@@ -2,12 +2,13 @@ import * as util from "https://code.agentscript.org/src/utils.js";
 import TwoDraw from "https://code.agentscript.org/src/TwoDraw.js";
 import Animator from "https://code.agentscript.org/src/Animator.js";
 import Model from "../models/EleitorModel.js";
+import GUI from 'https://code.agentscript.org/src/GUI.js'
 
 const worldOpts = {
-  minX: -20,
-  maxX: 20,
-  minY: -20,
-  maxY: 20,
+  minX: -100,
+  maxX: 100,
+  minY: -80,
+  maxY: 100,
 };
 
 const model = new Model(worldOpts); // no arguments => use default world options
@@ -15,10 +16,9 @@ model.setup();
 
 const view = new TwoDraw(model, {
   div: "modelDiv",
-  patchSize: 20,
-  width: 600,
+  width: 1000,
   drawOptions: {
-    turtlesSize: 1.5,
+    turtlesSize: 5,
     turtlesShape: "person",
     turtlesColor: (t) => model.coloring(t),//(t) => (model.coloring(t.breed.name)),//(t) => (t.breed.name === "bolsonaro" ? "green" : "red"),
     patchesColor: "black"
@@ -32,6 +32,16 @@ const animation = new Animator(
   },
   -1, // -1 = run infinite
   60 // fps
-);
+).stop();
 
-util.toWindow({ util, model, view, animation });
+const gui = new GUI({
+  Tempo: {
+    monitor: [model,'Segundos']
+  },
+  Parar: {
+    switch: true,
+    cmd: val => { if (val) { animation.stop(); model.pauseCron(); } else { animation.start(); model.startCron(); } },
+},
+})
+
+util.toWindow({ util, model, view, animation, gui });

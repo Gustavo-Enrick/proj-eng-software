@@ -1,13 +1,57 @@
 import Model from "https://code.agentscript.org/src/Model.js";
 
 class EleitorModel extends Model {
+  Cron = 0;
+  Segundos =0;
+  hour = 0;
+  minute = 0;
+  second = 0;
+  millisecond = 0;
+
   constructor(worldOptions = undefined) {
     super(worldOptions);
   }
 
+  timer() {
+    if ((this.millisecond += 10) == 1000) {
+      this.millisecond = 0;
+      this.second++;
+    }
+    if (this.second == 60) {
+      this.second = 0;
+      this.minute++;
+    }
+    if (this.minute == 60) {
+      this.minute = 0;
+      this.hour++;
+    }
+
+    this.Segundos = this.second;
+  }
+
+  startCron() {
+    this.pauseCron();
+    
+    this.Tempo = setInterval(() => {
+      this.timer();
+    }, 10);
+  }
+
+  pauseCron() {
+    clearInterval(this.Tempo);
+  }
+
+
+
+
+
+
   setup() {
+    // this.startCron();
+    
     this.turtleBreeds("lula bolsonaro cidadao");
 
+    //Propriedade para as raças
     this.patches.setDefault("convertido", 0);
 
     //Lula
@@ -66,19 +110,15 @@ class EleitorModel extends Model {
     if (!patchRight) turtle.left(90);
     if (!patchLeft) turtle.right(90);
 
-    // let vizinho = turtle.patch.neighbors;
-
-
     //lógica para trnaformar um agente em outro
     // if(turtle.breed === this.lula) {
     //   turtle.hatch(1, this.bolsonaro, (i) => turtle.die());
     // }
 
- 
-    //setar valor em propriedade
+    //setar valor em propriedade da raça
     // turtle.patch.convertido += 1;
 
-    turtle.forward(0.3);
+    turtle.forward(0.5);
   }
 
   coloring(turtle) {
