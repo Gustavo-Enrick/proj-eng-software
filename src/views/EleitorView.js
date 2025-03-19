@@ -18,14 +18,14 @@ const view = new TwoDraw(model, {
   patchSize: 20,
   width: 600,
   drawOptions: {
-    turtlesSize: 2,
+    turtlesSize: 1.5,
     turtlesShape: "person",
     turtlesColor: (t) => model.coloring(t),//(t) => (model.coloring(t.breed.name)),//(t) => (t.breed.name === "bolsonaro" ? "green" : "red"),
-    patchesColor: "black",
+    patchesColor: "black"
   },
 });
 
-const anim = new Animator(
+const animation = new Animator(
   () => {
     model.step();
     view.draw();
@@ -34,4 +34,4 @@ const anim = new Animator(
   60 // fps
 );
 
-util.toWindow({ util, model, view, anim });
+util.toWindow({ util, model, view, animation });

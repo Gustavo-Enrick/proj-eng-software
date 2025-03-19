@@ -6,26 +6,34 @@ class EleitorModel extends Model {
   }
 
   setup() {
-    this.turtleBreeds("lula bolsonaro cyro");
+    this.turtleBreeds("lula bolsonaro cidadao");
+
+    this.patches.setDefault("convertido", 0);
 
     //Lula
     this.patches.nOf(1).ask((p) => {
       p.sprout(1, this.lula, (t) => {
-        t.face(p.neighbors4.oneOf());
+        // t.face(p.neighbors4.oneOf());
+        t.atEdge = "bounce";
+        t.rotate(45);
       });
     });
 
     //Bolsonaro
     this.patches.nOf(1).ask((p) => {
       p.sprout(1, this.bolsonaro, (t) => {
-        t.face(p.neighbors4.oneOf());
+        // t.face(p.neighbors4.oneOf());
+        t.atEdge = "bounce";
+        t.rotate(45);
       });
     });
 
-    //Cyro
-    this.patches.nOf(1).ask((p) => {
-      p.sprout(1, this.cyro, (t) => {
-        t.face(p.neighbors4.oneOf());
+    //Cidadao
+    this.patches.nOf(10).ask((p) => {
+      p.sprout(1, this.cidadao, (t) => {
+        // t.face(p.neighbors4.oneOf());
+        t.atEdge = "bounce";
+        t.rotate(45);
       });
     });
   }
@@ -43,23 +51,32 @@ class EleitorModel extends Model {
     //   this.walk(c);
     // });
 
-    this.turtles.ask(turtle => {
+    this.turtles.ask((turtle) => {
       this.walk(turtle);
     });
   }
 
   walk(turtle) {
-    let wiggleAngle = 30;
+    turtle.right(util.randomInt(25));
+    turtle.left(util.randomInt(25));
 
-    // let patchAhead = turtle.patchAhead(1);
-    let patchRight = turtle.patchRightAndAhead(wiggleAngle, 1);
-    let patchLeft = turtle.patchLeftAndAhead(wiggleAngle, 1);
+    let patchRight = turtle.patchRightAndAhead(30, 1);
+    let patchLeft = turtle.patchLeftAndAhead(30, 1);
 
     if (!patchRight) turtle.left(90);
     if (!patchLeft) turtle.right(90);
 
-    // if(patchRight === undefined) turtle.left(90);
-    // if(patchLeft === undefined) turtle.right(90);
+    // let vizinho = turtle.patch.neighbors;
+
+
+    //lógica para trnaformar um agente em outro
+    // if(turtle.breed === this.lula) {
+    //   turtle.hatch(1, this.bolsonaro, (i) => turtle.die());
+    // }
+
+ 
+    //setar valor em propriedade
+    // turtle.patch.convertido += 1;
 
     turtle.forward(0.3);
   }
@@ -70,8 +87,8 @@ class EleitorModel extends Model {
         return "green";
       case this.lula:
         return "red";
-      case this.cyro:
-        return "blue";
+      case this.cidadao:
+        return "gray";
       default:
         return "gray";
     }
