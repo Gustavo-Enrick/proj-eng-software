@@ -78,6 +78,9 @@ class EleitorModel extends Model {
     });
   }
 
+  
+
+//----------------------------------------------Separar em uma nova classe
   //Movimentação dos eleitores: cidadao
   walkEleitor(turtle) {
     let candidato = null;
@@ -133,24 +136,23 @@ class EleitorModel extends Model {
   }
 
   //Colisao com a parede
-  colisionWall(t) {
+  colisionWall(turtle) {
     const rtAngle = 90; // Math.PI / 2
-    const turnAngle = rtAngle * t.turn;
+    const turnAngle = rtAngle * turtle.turn;
 
-
-    if (!this.wallAt(t, turnAngle) && this.wallAt(t, 1.5 * turnAngle)) {
-      t.rotate(turnAngle);
+    if (!this.wallAt(turtle, turnAngle) && this.wallAt(turtle, 1.5 * turnAngle)) {
+      turtle.rotate(turnAngle);
     }else{
-      // t.heading += util.randomCentered(10);
+      // turtle.heading += util.randomCentered(10);
     }
 
-    while (this.wallAt(t, 0)) t.rotate(-turnAngle);
+    while (this.wallAt(turtle, 0)) turtle.rotate(-turnAngle);
   }
 
   //Identificar se a aparede está logo a frente da raça
-  wallAt(t, angle) {
-    const p = t.patchLeftAndAhead(angle, 1);
-    return p && p.isBreed(this.walls);
+  wallAt(turtle, angle) {
+    const patchLocation = turtle.patchLeftAndAhead(angle, 1);
+    return patchLocation && patchLocation.isBreed(this.walls);
   }
 
   //Verifica se uma raça está perto de outra
