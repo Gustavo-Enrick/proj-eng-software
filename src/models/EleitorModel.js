@@ -1,126 +1,143 @@
 import Model from "https://code.agentscript.org/src/Model.js";
+import * as util from "https://code.agentscript.org/src/utils.js";
 
 class EleitorModel extends Model {
-  Cron = 0;
-  Segundos =0;
-  hour = 0;
-  minute = 0;
-  second = 0;
-  millisecond = 0;
+  Lulista;
+  Bolsonarista;
+  Eleitor;
+  Velocidade;
 
-  constructor(worldOptions = undefined) {
+  constructor(agentOptions, worldOptions = undefined) {
     super(worldOptions);
+
+    this.Lulista = agentOptions.lulista;
+    this.Bolsonarista = agentOptions.bolsonarista;
+    this.Eleitor = agentOptions.eleitor;
+    this.Velocidade = agentOptions.velocidade;
   }
 
-  timer() {
-    if ((this.millisecond += 10) == 1000) {
-      this.millisecond = 0;
-      this.second++;
-    }
-    if (this.second == 60) {
-      this.second = 0;
-      this.minute++;
-    }
-    if (this.minute == 60) {
-      this.minute = 0;
-      this.hour++;
-    }
-
-    this.Segundos = this.second;
-  }
-
-  startCron() {
-    this.pauseCron();
-    
-    this.Tempo = setInterval(() => {
-      this.timer();
-    }, 10);
-  }
-
-  pauseCron() {
-    clearInterval(this.Tempo);
-  }
-
-
-
-
-
-
+  //Inicializar raças
   setup() {
-    // this.startCron();
-    
     this.turtleBreeds("lula bolsonaro cidadao");
 
-    //Propriedade para as raças
-    this.patches.setDefault("convertido", 0);
-
     //Lula
-    this.patches.nOf(1).ask((p) => {
+    this.patches.nOf(this.Lulista).ask((p) => {
       p.sprout(1, this.lula, (t) => {
-        // t.face(p.neighbors4.oneOf());
         t.atEdge = "bounce";
         t.rotate(45);
       });
     });
 
     //Bolsonaro
-    this.patches.nOf(1).ask((p) => {
+    this.patches.nOf(this.Bolsonarista).ask((p) => {
       p.sprout(1, this.bolsonaro, (t) => {
-        // t.face(p.neighbors4.oneOf());
         t.atEdge = "bounce";
         t.rotate(45);
       });
     });
 
     //Cidadao
-    this.patches.nOf(10).ask((p) => {
+    this.patches.nOf(this.Eleitor).ask((p) => {
       p.sprout(1, this.cidadao, (t) => {
-        // t.face(p.neighbors4.oneOf());
         t.atEdge = "bounce";
         t.rotate(45);
       });
     });
   }
 
+  //Configuração de movimentação
   step() {
-    // this.bolsonaro.ask((b) => {
-    //   this.walk(b);
-    // });
+    this.bolsonaro.ask((b) => {
+      this.walkCandidato(b);
+    });
 
-    // this.lula.ask((l) => {
-    //   this.walk(l);
-    // });
+    this.lula.ask((l) => {
+      this.walkCandidato(l);
+    });
 
-    // this.cyro.ask((c) => {
-    //   this.walk(c);
-    // });
-
-    this.turtles.ask((turtle) => {
-      this.walk(turtle);
+    this.cidadao.ask((c) => {
+      this.walkEleitor(c);
     });
   }
 
-  walk(turtle) {
-    turtle.right(util.randomInt(25));
-    turtle.left(util.randomInt(25));
+  //Movimentação dos eleitores: cidadao
+  walkEleitor(turtle) {
+    let candidato = null;
 
-    let patchRight = turtle.patchRightAndAhead(30, 1);
-    let patchLeft = turtle.patchLeftAndAhead(30, 1);
+    //Está próximo do Lula?
+    const closestLula = this.closestNeighbor(turtle, this.lula);
+    if (
+      closestLula &&
+      turtle.distance(closestLula) <= 2 &&
+      candidato === null
+    ) {
+      candidato = this.lula;
+    }
 
-    if (!patchRight) turtle.left(90);
-    if (!patchLeft) turtle.right(90);
+    //Está próximo do Bolsonaro?
+    const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
+    if (
+      closestBolsonaro &&
+      turtle.distance(closestBolsonaro) <= 2 &&
+      candidato === null
+    ) {
+      candidato = this.bolsonaro;
+    }
 
-    //lógica para trnaformar um agente em outro
-    // if(turtle.breed === this.lula) {
-    //   turtle.hatch(1, this.bolsonaro, (i) => turtle.die());
-    // }
+    //Se estiver próximo de um dos candidatos: converter este eleitor
+    if (candidato !== null) {
+      turtle.hatch(1, candidato, (i) => turtle.die());
+      this.converterEleitor(candidato);
+    } else {
+      turtle.heading += util.randomCentered(30);
+    }
 
-    //setar valor em propriedade da raça
-    // turtle.patch.convertido += 1;
-
-    turtle.forward(0.5);
+    turtle.forward(this.Velocidade);
   }
 
+  //Movimentação dos candidatos: bolsonaro; lula
+  walkCandidato(turtle) {
+    //Está próximo do Cidadão?
+    const closestCidadao = this.closestNeighbor(turtle, this.cidadao);
+
+    if (closestCidadao && turtle.distance(closestCidadao) <= 2) {
+      const cidadaoHeading = closestCidadao.heading;
+      turtle.heading = cidadaoHeading * -1;
+    } else {
+      turtle.heading += util.randomCentered(30);
+    }
+
+    turtle.forward(this.Velocidade);
+  }
+
+  //verifica se uma raça está perto de outra
+  closestNeighbor(turtle, neighbor) {
+    let closest = false;
+
+    if (neighbor.length > 0) {
+      closest = neighbor.minOneOf((t) => t.distance(turtle));
+    }
+
+    return closest;
+  }
+
+  //Adicionar valores no contador de convertidos
+  converterEleitor(candidato) {
+    switch (candidato) {
+      case this.bolsonaro:
+        this.Bolsonarista++;
+        break;
+      case this.lula:
+        this.Lulista++;
+        break;
+      default:
+        break;
+    }
+
+    this.Eleitor--;
+  }
+
+  //Colorir raças
   coloring(turtle) {
     switch (turtle.breed) {
       case this.bolsonaro:
@@ -130,7 +147,7 @@ class EleitorModel extends Model {
       case this.cidadao:
         return "gray";
       default:
-        return "gray";
+        return "white";
     }
   }
 }
