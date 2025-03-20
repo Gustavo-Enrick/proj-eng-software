@@ -1,5 +1,5 @@
-import Model from "https://code.agentscript.org/src/Model.js";
-import * as util from "https://code.agentscript.org/src/utils.js";
+import Model from "../../node_modules/agentscript/src/Model.js";
+import * as util from "../../node_modules/agentscript/src/utils.js";
 
 class EleitorModel extends Model {
   Lulista;
@@ -20,16 +20,34 @@ class EleitorModel extends Model {
   setup() {
     this.turtleBreeds("lula bolsonaro cidadao");
 
+    //Inicializando propriedades
+    this.lula.setDefault("turn", +1);
+    this.bolsonaro.setDefault("turn", +1);
+    this.cidadao.setDefault("turn", -1);
+
+    //Inicializando mapa
+    this.patchBreeds("walls");
+
+    this.patches.ask((p) => {
+      if (util.randomFloat(3) < 0.01) {
+        const neighbors = this.patches.inRadius(p, util.randomFloat(3));
+        neighbors.ask((n) => {
+          n.setBreed(this.walls);
+        });
+      }
+    });
+
     //Lula
-    this.patches.nOf(this.Lulista).ask((p) => {
+    this.patches.filter(p => !p.isBreed(this.walls)).nOf(this.Lulista).ask((p) => {
       p.sprout(1, this.lula, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
+        t.face(p.neighbors4.oneOf());
       });
     });
 
     //Bolsonaro
-    this.patches.nOf(this.Bolsonarista).ask((p) => {
+    this.patches.filter(p => !p.isBreed(this.walls)).nOf(this.Bolsonarista).ask((p) => {
       p.sprout(1, this.bolsonaro, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
@@ -37,7 +55,7 @@ class EleitorModel extends Model {
     });
 
     //Cidadao
-    this.patches.nOf(this.Eleitor).ask((p) => {
+    this.patches.filter(p => !p.isBreed(this.walls)).nOf(this.Eleitor).ask((p) => {
       p.sprout(1, this.cidadao, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
@@ -64,7 +82,7 @@ class EleitorModel extends Model {
   walkEleitor(turtle) {
     let candidato = null;
 
-    //Está próximo do Lula?
+    //Está próximo do eleitor Lula?
     const closestLula = this.closestNeighbor(turtle, this.lula);
     if (
       closestLula &&
@@ -74,7 +92,7 @@ class EleitorModel extends Model {
       candidato = this.lula;
     }
 
-    //Está próximo do Bolsonaro?
+    //Está próximo do eleitor Bolsonaro?
     const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
     if (
       closestBolsonaro &&
@@ -86,11 +104,12 @@ class EleitorModel extends Model {
 
     //Se estiver próximo de um dos candidatos: converter este eleitor
     if (candidato !== null) {
-      turtle.hatch(1, candidato, (i) => turtle.die());
-      this.converterEleitor(candidato);
+      this.converterEleitor(turtle, candidato);
     } else {
-      turtle.heading += util.randomCentered(30);
+       turtle.heading += util.randomCentered(5);
     }
+
+    this.colisionWall(turtle);
 
     turtle.forward(this.Velocidade);
   }
@@ -101,16 +120,40 @@ class EleitorModel extends Model {
     const closestCidadao = this.closestNeighbor(turtle, this.cidadao);
 
     if (closestCidadao && turtle.distance(closestCidadao) <= 2) {
+      turtle.face(this.patches.nOf(this.cidadao));
       const cidadaoHeading = closestCidadao.heading;
       turtle.heading = cidadaoHeading * -1;
     } else {
-      turtle.heading += util.randomCentered(30);
+      //  turtle.heading += util.randomCentered(10);
     }
+
+    this.colisionWall(turtle);
 
     turtle.forward(this.Velocidade);
   }
 
-  //verifica se uma raça está perto de outra
+  //Colisao com a parede
+  colisionWall(t) {
+    const rtAngle = 90; // Math.PI / 2
+    const turnAngle = rtAngle * t.turn;
+
+
+    if (!this.wallAt(t, turnAngle) && this.wallAt(t, 1.5 * turnAngle)) {
+      t.rotate(turnAngle);
+    }else{
+      // t.heading += util.randomCentered(10);
+    }
+
+    while (this.wallAt(t, 0)) t.rotate(-turnAngle);
+  }
+
+  //Identificar se a aparede está logo a frente da raça
+  wallAt(t, angle) {
+    const p = t.patchLeftAndAhead(angle, 1);
+    return p && p.isBreed(this.walls);
+  }
+
+  //Verifica se uma raça está perto de outra
   closestNeighbor(turtle, neighbor) {
     let closest = false;
 
@@ -122,7 +165,9 @@ class EleitorModel extends Model {
   }
 
   //Adicionar valores no contador de convertidos
-  converterEleitor(candidato) {
+  converterEleitor(turtle, candidato) {
+    turtle.hatch(1, candidato, (i) => turtle.die());
+
     switch (candidato) {
       case this.bolsonaro:
         this.Bolsonarista++;

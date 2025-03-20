@@ -1,15 +1,16 @@
-import * as util from "https://code.agentscript.org/src/utils.js";
-import TwoDraw from "https://code.agentscript.org/src/TwoDraw.js";
-import Animator from "https://code.agentscript.org/src/Animator.js";
-import GUI from "https://code.agentscript.org/src/GUI.js";
+import * as util from "../../node_modules/agentscript/src/utils.js";
+import TwoDraw from "../../node_modules/agentscript/src/TwoDraw.js";
+import Animator from "../../node_modules/agentscript/src/Animator.js";
+import GUI from "../../node_modules/agentscript/src/GUI.js";
 import Model from "../models/EleitorModel.js";
 import CronometroService from "../services/CronometroService.js";
+import Color from "../../node_modules/agentscript/src/Color.js";
 
 const worldOpts = {
   minX: -100,
   maxX: 100,
   minY: -80,
-  maxY: 95,
+  maxY: 80,
 };
 
 const agentOptions = {
@@ -18,6 +19,11 @@ const agentOptions = {
   eleitor: 100,
   velocidade: 0.5,
 };
+
+const patchOptions = {
+  wallColor: Color.typedColor(222, 184, 135),
+  backgroundColor: Color.typedColor("black")
+}
 
 const model = new Model(agentOptions, worldOpts);
 model.setup();
@@ -28,10 +34,11 @@ const view = new TwoDraw(model, {
   div: "modelDiv",
   width: 1000,
   drawOptions: {
+    patchesColor: (p) =>
+      p.breed.name === "walls" ? patchOptions.wallColor : patchOptions.backgroundColor,
     turtlesSize: 3,
     turtlesShape: "person",
-    turtlesColor: (t) => model.coloring(t), //(t) => (model.coloring(t.breed.name)),//(t) => (t.breed.name === "bolsonaro" ? "green" : "red"),
-    patchesColor: "black",
+    turtlesColor: (t) => model.coloring(t),
   },
 });
 
@@ -55,7 +62,7 @@ const gui = new GUI({
     monitor: [model, "Eleitor"],
   },
   Velocidade: {
-    slider: [1, [0.5, 3, 0.5]],
+    slider: [0.5, [0.1, 1, 0.1]],
     cmd: (val) => (model.Velocidade = val),
   },
   Tempo: {
