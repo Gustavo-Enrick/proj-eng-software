@@ -16,48 +16,51 @@ class EleitorModel extends Model {
     this.Velocidade = agentOptions.velocidade;
   }
 
+
   //Inicializar raças
   setup() {
     this.turtleBreeds("lula bolsonaro cidadao");
 
-    //Inicializando propriedades
-    this.lula.setDefault("turn", +1);
-    this.bolsonaro.setDefault("turn", +1);
-    this.cidadao.setDefault("turn", -1);
+   //Inicializando propriedades
+   this.lula.setDefault("turn", -1);
+   this.bolsonaro.setDefault("turn", -1);
+   this.cidadao.setDefault("turn", -1);
 
     //Inicializando mapa
-    this.patchBreeds("walls");
+    this.patchBreeds("wall");
 
     this.patches.ask((p) => {
-      if (util.randomFloat(3) < 0.01) {
-        const neighbors = this.patches.inRadius(p, util.randomFloat(3));
+      if (util.randomFloat(10) < 0.01) {
+        const neighbors = this.patches.inRadius(p, util.randomInt(10));
         neighbors.ask((n) => {
-          n.setBreed(this.walls);
+          n.setBreed(this.wall);
         });
       }
     });
 
     //Lula
-    this.patches.filter(p => !p.isBreed(this.walls)).nOf(this.Lulista).ask((p) => {
+    this.patches.filter(p => !p.isBreed(this.wall)).nOf(this.Lulista).ask((p) => {
       p.sprout(1, this.lula, (t) => {
         t.atEdge = "bounce";
-        t.rotate(45);
         t.face(p.neighbors4.oneOf());
+        t.rotate(45);
       });
     });
 
     //Bolsonaro
-    this.patches.filter(p => !p.isBreed(this.walls)).nOf(this.Bolsonarista).ask((p) => {
+    this.patches.filter(p => !p.isBreed(this.wall)).nOf(this.Bolsonarista).ask((p) => {
       p.sprout(1, this.bolsonaro, (t) => {
         t.atEdge = "bounce";
+        t.face(p.neighbors4.oneOf());
         t.rotate(45);
       });
     });
 
     //Cidadao
-    this.patches.filter(p => !p.isBreed(this.walls)).nOf(this.Eleitor).ask((p) => {
+    this.patches.filter(p => !p.isBreed(this.wall)).nOf(this.Eleitor).ask((p) => {
       p.sprout(1, this.cidadao, (t) => {
         t.atEdge = "bounce";
+        t.face(p.neighbors4.oneOf());
         t.rotate(45);
       });
     });
@@ -65,7 +68,7 @@ class EleitorModel extends Model {
 
   //Configuração de movimentação
   step() {
-    this.bolsonaro.ask((b) => {
+    this.bolsonaro.ask((b) => {      
       this.walkCandidato(b);
     });
 
@@ -87,51 +90,39 @@ class EleitorModel extends Model {
 
     //Está próximo do eleitor Lula?
     const closestLula = this.closestNeighbor(turtle, this.lula);
-    if (
-      closestLula &&
-      turtle.distance(closestLula) <= 2 &&
-      candidato === null
-    ) {
+    if (closestLula && turtle.distance(closestLula) <= 2 && candidato === null) {
       candidato = this.lula;
     }
 
     //Está próximo do eleitor Bolsonaro?
     const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
-    if (
-      closestBolsonaro &&
-      turtle.distance(closestBolsonaro) <= 2 &&
-      candidato === null
-    ) {
+    if (closestBolsonaro && turtle.distance(closestBolsonaro) <= 2 && candidato === null) {
       candidato = this.bolsonaro;
     }
-
+ 
     //Se estiver próximo de um dos candidatos: converter este eleitor
     if (candidato !== null) {
       this.converterEleitor(turtle, candidato);
     } else {
-       turtle.heading += util.randomCentered(5);
+      turtle.heading += util.randomCentered(5);
     }
-
     this.colisionWall(turtle);
 
     turtle.forward(this.Velocidade);
   }
 
   //Movimentação dos candidatos: bolsonaro; lula
-  walkCandidato(turtle) {
+  walkCandidato(turtle) {   
     //Está próximo do Cidadão?
     const closestCidadao = this.closestNeighbor(turtle, this.cidadao);
-
-    if (closestCidadao && turtle.distance(closestCidadao) <= 2) {
-      turtle.face(this.patches.nOf(this.cidadao));
-      const cidadaoHeading = closestCidadao.heading;
-      turtle.heading = cidadaoHeading * -1;
+    if (closestCidadao && turtle.distance(closestCidadao) <= 10) {
+      //Quando próximo, direcionar candidato para o eleitor
+      turtle.face(closestCidadao);
     } else {
-      //  turtle.heading += util.randomCentered(10);
+      turtle.heading += util.randomCentered(5);
     }
-
+    
     this.colisionWall(turtle);
-
     turtle.forward(this.Velocidade);
   }
 
@@ -140,19 +131,18 @@ class EleitorModel extends Model {
     const rtAngle = 90; // Math.PI / 2
     const turnAngle = rtAngle * turtle.turn;
 
-    if (!this.wallAt(turtle, turnAngle) && this.wallAt(turtle, 1.5 * turnAngle)) {
-      turtle.rotate(turnAngle);
-    }else{
-      // turtle.heading += util.randomCentered(10);
+    if (!this.wallClosest(turtle, turnAngle) && this.wallClosest(turtle, 1.5 * turnAngle)){
+      turtle.rotate(-turnAngle);
     }
-
-    while (this.wallAt(turtle, 0)) turtle.rotate(-turnAngle);
+ 
+    while (this.wallClosest(turtle, 0)) turtle.rotate(turnAngle);
   }
 
-  //Identificar se a aparede está logo a frente da raça
-  wallAt(turtle, angle) {
-    const patchLocation = turtle.patchLeftAndAhead(angle, 1);
-    return patchLocation && patchLocation.isBreed(this.walls);
+  //Verifica se está encostrando na borda do mapa ou na parede (wall)
+  wallClosest(turtle, angle) {
+    const patchLeft = turtle.patchLeftAndAhead(angle, 1);
+
+    return (patchLeft && patchLeft.isBreed(this.wall)) || !patchLeft;
   }
 
   //Verifica se uma raça está perto de outra

@@ -35,9 +35,9 @@ const view = new TwoDraw(model, {
   width: 1000,
   drawOptions: {
     patchesColor: (p) =>
-      p.breed.name === "walls" ? patchOptions.wallColor : patchOptions.backgroundColor,
+      p.breed.name === "wall" ? patchOptions.wallColor : patchOptions.backgroundColor,
     turtlesSize: 3,
-    turtlesShape: "person",
+    turtlesShape: "circle",
     turtlesColor: (t) => model.coloring(t),
   },
 });
@@ -80,6 +80,12 @@ const gui = new GUI({
       }
     },
   },
+  Reiniciar: {
+    button: () => {
+      model.reset(false);
+      model.setup();
+    }
+  }
 });
 
 util.toWindow({ util, model, view, animation, gui });
