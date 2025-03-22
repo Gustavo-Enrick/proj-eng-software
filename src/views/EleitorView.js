@@ -5,6 +5,7 @@ import GUI from "../../node_modules/agentscript/src/GUI.js";
 import Model from "../models/EleitorModel.js";
 import CronometroService from "../services/CronometroService.js";
 import Color from "../../node_modules/agentscript/src/Color.js";
+import ColorMap from "../../node_modules/agentscript/src/ColorMap.js";
 
 const worldOpts = {
   minX: -100,
@@ -23,7 +24,13 @@ const agentOptions = {
 const patchOptions = {
   wallColor: Color.typedColor(222, 184, 135),
   backgroundColor: Color.typedColor("black")
-}
+};
+
+
+let myColorMap = ColorMap.gradientColorMap(
+  8, ["black", "purple", "yellow"]
+);
+
 
 const model = new Model(agentOptions, worldOpts);
 model.setup();
@@ -34,8 +41,11 @@ const view = new TwoDraw(model, {
   div: "modelDiv",
   width: 1000,
   drawOptions: {
-    patchesColor: (p) =>
-      p.breed.name === "wall" ? patchOptions.wallColor : patchOptions.backgroundColor,
+    // patchesColor: (p) =>
+    //   p.breed.name === "wall" ? patchOptions.wallColor : patchOptions.backgroundColor,
+    patchesColor: (patch) => myColorMap.scaleColor(
+      patch.influencia, 0, 100
+    ),
     turtlesSize: 3,
     turtlesShape: "circle",
     turtlesColor: (t) => model.coloring(t),
