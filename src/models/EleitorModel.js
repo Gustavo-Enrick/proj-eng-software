@@ -16,19 +16,15 @@ class EleitorModel extends Model {
     this.Velocidade = agentOptions.velocidade;
   }
 
-
   //Inicializar raças
   setup() {
+    //Declarando raças
     this.turtleBreeds("lula bolsonaro cidadao");
 
-   //Inicializando propriedades
-   this.lula.setDefault("turn", -1);
-   this.bolsonaro.setDefault("turn", -1);
-   this.cidadao.setDefault("turn", -1);
-
-    //Inicializando mapa
+    //Declarando mapa
     this.patchBreeds("wall");
 
+    //Configurando seed do mapa
     this.patches.ask((p) => {
       if (util.randomFloat(10) < 0.01) {
         const neighbors = this.patches.inRadius(p, util.randomInt(10));
@@ -39,36 +35,42 @@ class EleitorModel extends Model {
     });
 
     //Lula
-    this.patches.filter(p => !p.isBreed(this.wall)).nOf(this.Lulista).ask((p) => {
-      p.sprout(1, this.lula, (t) => {
-        t.atEdge = "bounce";
-        t.face(p.neighbors4.oneOf());
-        t.rotate(45);
+    this.patches
+      .filter((p) => !p.isBreed(this.wall))
+      .nOf(this.Lulista)
+      .ask((p) => {
+        p.sprout(1, this.lula, (t) => {
+          t.atEdge = "bounce";
+          t.rotate(45);
+        });
       });
-    });
 
     //Bolsonaro
-    this.patches.filter(p => !p.isBreed(this.wall)).nOf(this.Bolsonarista).ask((p) => {
-      p.sprout(1, this.bolsonaro, (t) => {
-        t.atEdge = "bounce";
-        t.face(p.neighbors4.oneOf());
-        t.rotate(45);
+    this.patches
+      .filter((p) => !p.isBreed(this.wall))
+      .nOf(this.Bolsonarista)
+      .ask((p) => {
+        p.sprout(1, this.bolsonaro, (t) => {
+          t.atEdge = "bounce";
+          t.rotate(45);
+        });
       });
-    });
 
     //Cidadao
-    this.patches.filter(p => !p.isBreed(this.wall)).nOf(this.Eleitor).ask((p) => {
-      p.sprout(1, this.cidadao, (t) => {
-        t.atEdge = "bounce";
-        t.face(p.neighbors4.oneOf());
-        t.rotate(45);
+    this.patches
+      .filter((p) => !p.isBreed(this.wall))
+      .nOf(this.Eleitor)
+      .ask((p) => {
+        p.sprout(1, this.cidadao, (t) => {
+          t.atEdge = "bounce";
+          t.rotate(45);
+        });
       });
-    });
   }
 
   //Configuração de movimentação
   step() {
-    this.bolsonaro.ask((b) => {      
+    this.bolsonaro.ask((b) => {
       this.walkCandidato(b);
     });
 
@@ -81,61 +83,62 @@ class EleitorModel extends Model {
     });
   }
 
-  
-
-//----------------------------------------------Separar em uma nova classe
+  //----------------------------------------------
   //Movimentação dos eleitores: cidadao
   walkEleitor(turtle) {
+    this.colisionWall(turtle);
+
+    turtle.forward(this.Velocidade);
+
     let candidato = null;
 
     //Está próximo do eleitor Lula?
     const closestLula = this.closestNeighbor(turtle, this.lula);
-    if (closestLula && turtle.distance(closestLula) <= 2 && candidato === null) {
+    if (
+      closestLula &&
+      turtle.distance(closestLula) <= 2 &&
+      candidato === null
+    ) {
       candidato = this.lula;
     }
 
     //Está próximo do eleitor Bolsonaro?
     const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
-    if (closestBolsonaro && turtle.distance(closestBolsonaro) <= 2 && candidato === null) {
+    if (
+      closestBolsonaro &&
+      turtle.distance(closestBolsonaro) <= 2 &&
+      candidato === null
+    ) {
       candidato = this.bolsonaro;
     }
- 
+
     //Se estiver próximo de um dos candidatos: converter este eleitor
     if (candidato !== null) {
       this.converterEleitor(turtle, candidato);
     } else {
-      turtle.heading += util.randomCentered(5);
+      turtle.heading += util.randomCentered(30);
     }
-    this.colisionWall(turtle);
-
-    turtle.forward(this.Velocidade);
   }
 
   //Movimentação dos candidatos: bolsonaro; lula
-  walkCandidato(turtle) {   
+  walkCandidato(turtle) {
+    this.colisionWall(turtle);
+
+    turtle.forward(this.Velocidade);
+
     //Está próximo do Cidadão?
     const closestCidadao = this.closestNeighbor(turtle, this.cidadao);
     if (closestCidadao && turtle.distance(closestCidadao) <= 10) {
       //Quando próximo, direcionar candidato para o eleitor
       turtle.face(closestCidadao);
     } else {
-      turtle.heading += util.randomCentered(5);
+      turtle.heading += util.randomCentered(30);
     }
-    
-    this.colisionWall(turtle);
-    turtle.forward(this.Velocidade);
   }
 
   //Colisao com a parede
   colisionWall(turtle) {
-    const rtAngle = 90; // Math.PI / 2
-    const turnAngle = rtAngle * turtle.turn;
-
-    if (!this.wallClosest(turtle, turnAngle) && this.wallClosest(turtle, 1.5 * turnAngle)){
-      turtle.rotate(-turnAngle);
-    }
- 
-    while (this.wallClosest(turtle, 0)) turtle.rotate(turnAngle);
+    while (this.wallClosest(turtle, 0)) turtle.rotate(-45);
   }
 
   //Verifica se está encostrando na borda do mapa ou na parede (wall)

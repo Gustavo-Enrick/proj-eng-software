@@ -6,6 +6,7 @@ import Model from "../models/EleitorModel.js";
 import CronometroService from "../services/CronometroService.js";
 import Color from "../../node_modules/agentscript/src/Color.js";
 
+//Dimensões do mapa
 const worldOpts = {
   minX: -100,
   maxX: 100,
@@ -13,6 +14,7 @@ const worldOpts = {
   maxY: 80,
 };
 
+//Opções iniciais para a similuação
 const agentOptions = {
   lulista: 1,
   bolsonarista: 1,
@@ -20,24 +22,28 @@ const agentOptions = {
   velocidade: 0.5,
 };
 
+//Cores do mapa
 const patchOptions = {
-  wallColor: Color.typedColor(222, 184, 135),
-  backgroundColor: Color.typedColor("black")
-}
+  wallColor: Color.rgbaToPixel(222, 184, 135), // Color.typedColor(222, 184, 135),
+  backgroundColor: Color.rgbaToPixel(0, 0, 0), // Color.typedColor("black")
+};
 
-const model = new Model(agentOptions, worldOpts);
+let model = new Model(agentOptions, worldOpts);
 model.setup();
 
-const cronometro = new CronometroService();
+let cronometro = new CronometroService();
 
+//Configurando visualização da simulação
 const view = new TwoDraw(model, {
   div: "modelDiv",
   width: 1000,
   drawOptions: {
     patchesColor: (p) =>
-      p.breed.name === "wall" ? patchOptions.wallColor : patchOptions.backgroundColor,
+      p.breed.name === "wall"
+        ? patchOptions.wallColor
+        : patchOptions.backgroundColor,
     turtlesSize: 3,
-    turtlesShape: "circle",
+    turtlesShape: "person",
     turtlesColor: (t) => model.coloring(t),
   },
 });
@@ -47,10 +53,11 @@ const animation = new Animator(
     model.step();
     view.draw();
   },
-  -1, // -1 = run infinite
-  60 // fps
+  -1, // -1 = passos infinitos
+  60 // FPS
 ).stop();
 
+//Configuração do menu lateral
 const gui = new GUI({
   Lula: {
     monitor: [model, "Lulista"],
@@ -80,12 +87,12 @@ const gui = new GUI({
       }
     },
   },
-  Reiniciar: {
-    button: () => {
-      model.reset(false);
-      model.setup();
-    }
-  }
+  // Reiniciar: {
+  //   button: () => {
+  //     model.reset();
+  //   }
+  // }
 });
 
+//Injetando configurações
 util.toWindow({ util, model, view, animation, gui });
