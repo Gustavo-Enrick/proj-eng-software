@@ -1,9 +1,10 @@
-import Model from "../../node_modules/agentscript/src/Model.js";
-import * as util from "../../node_modules/agentscript/src/utils.js";
+import Model from "../../libs/agentscript/src/Model.js";
+import * as util from "../../libs/agentscript/src/utils.js";
 
 class EleitorModel extends Model {
   Lulista;
   Bolsonarista;
+  Arthurista;
   Eleitor;
   Velocidade;
 
@@ -12,6 +13,7 @@ class EleitorModel extends Model {
 
     this.Lulista = agentOptions.lulista;
     this.Bolsonarista = agentOptions.bolsonarista;
+    this.Arthurista = agentOptions.arthurista;
     this.Eleitor = agentOptions.eleitor;
     this.Velocidade = agentOptions.velocidade;
   }
@@ -19,7 +21,7 @@ class EleitorModel extends Model {
   //Inicializar raças
   setup() {
     //Declarando raças
-    this.turtleBreeds("lula bolsonaro cidadao");
+    this.turtleBreeds("lula bolsonaro arthurVal cidadao");
 
     //Declarando mapa
     this.patchBreeds("wall");
@@ -56,6 +58,17 @@ class EleitorModel extends Model {
         });
       });
 
+    //Arthur Val
+    this.patches
+      .filter((p) => !p.isBreed(this.wall))
+      .nOf(this.Arthurista)
+      .ask((p) => {
+        p.sprout(1, this.arthurVal, (t) => {
+          t.atEdge = "bounce";
+          t.rotate(45);
+        });
+      });
+
     //Cidadao
     this.patches
       .filter((p) => !p.isBreed(this.wall))
@@ -76,6 +89,10 @@ class EleitorModel extends Model {
 
     this.lula.ask((l) => {
       this.walkCandidato(l);
+    });
+
+    this.arthurVal.ask((a) => {
+      this.walkCandidato(a);
     });
 
     this.cidadao.ask((c) => {
@@ -110,6 +127,16 @@ class EleitorModel extends Model {
       candidato === null
     ) {
       candidato = this.bolsonaro;
+    }
+
+    //Está próximo do eleitor Bolsonaro?
+    const closestArthurVal = this.closestNeighbor(turtle, this.arthurVal);
+    if (
+      closestArthurVal &&
+      turtle.distance(closestArthurVal) <= 2 &&
+      candidato === null
+    ) {
+      candidato = this.arthurVal;
     }
 
     //Se estiver próximo de um dos candidatos: converter este eleitor
@@ -170,6 +197,9 @@ class EleitorModel extends Model {
       case this.lula:
         this.Lulista++;
         break;
+      case this.arthurVal:
+        this.Arthurista++;
+        break;
       default:
         break;
     }
@@ -186,6 +216,8 @@ class EleitorModel extends Model {
         return "red";
       case this.cidadao:
         return "gray";
+      case this.arthurVal:
+        return "blue";
       default:
         return "white";
     }

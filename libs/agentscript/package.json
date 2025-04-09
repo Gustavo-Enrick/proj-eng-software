@@ -1,0 +1,91 @@
+{
+    "name": "agentscript",
+    "version": "0.10.26",
+    "description": "AgentScript Model in Model/View architecture",
+    "author": "Owen Densmore",
+    "homepage": "https://github.com/backspaces/agentscript",
+    "main": "dist/agentscript.umd.js",
+    "module": "dist/agentscript.js",
+    "files": [
+        "/bin/",
+        "/config/",
+        "/dist/",
+        "/docs/",
+        "/ide/",
+        "/leaflet/",
+        "/maplibre/",
+        "/models/",
+        "/mvc/",
+        "/src/",
+        "/uielements/",
+        "/vendor/",
+        "/views1/",
+        "/views2/",
+        "/views2full/",
+        "/views2mv/",
+        "/views25/",
+        "/views3/",
+        "/vscode.zip/",
+        "/vscode/"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/backspaces/agentscript.git"
+    },
+    "keywords": [
+        "netlogo",
+        "abm",
+        "agentscript"
+    ],
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://github.com/backspaces/agentscript/issues",
+        "test": "ls models/*js && exit 0",
+        "dtest": "test/denomodels.js && test/deno3Dgeom.js"
+    },
+    "scripts": {
+        "start": "http-server -p 9000 -o --silent > /dev/null &",
+        "clean": "rm -rf dist vendor views1 && mkdir dist vendor views1",
+        "build": "npm-run-all rmstore clean build-vendor build-dist build-views build-md build-docs",
+        "build-dist": "rollup -c config/rollup.dist.mjs",
+        "build-vendor": "yarn && rm -f vendor/* && rollup -c config/rollup.vendor.mjs && cp node_modules/uplot/dist/uPlot.min.css vendor/uPlot.css",
+        "build-views": "node bin/models2html",
+        "build-md": "bin/src2md 'models views1 views2 views2mv views2full views25 views3 mvc leaflet maplibre' > /dev/null",
+        "build-docs": "rm -rf docs/* && jsdoc -c config/cleantheme/jsdoc.json",
+        "rmstore": "find . -name \".DS_Store\" -delete",
+        "build-vscode": "rm vscode.zip; zip -r vscode.zip vscode",
+        "test": "test/denomodels.js && test/deno3Dgeom.js",
+        "-- END OF WORKFLOW --": "The following are versions tests, running models in various directories and browsers",
+        "runmodels": "bin/runnodemodels",
+        "run1": "bin/modelsinbrowser views1",
+        "run2mv": "bin/modelsinbrowser views2mv",
+        "run2full": "bin/modelsinbrowser views2full",
+        "run2x": "bin/modelsinbrowser views2x",
+        "run25": "bin/modelsinbrowser views25",
+        "run3": "bin/modelsinbrowser views3",
+        "runleaf": "bin/modelsinbrowser leaflet",
+        "runml": "bin/modelsinbrowser maplibre",
+        "runmvc": "bin/modelsinbrowser mvc",
+        "runnode": "bin/runnodemodels",
+        "runapps": "npm run runleaf & npm run runmvc & npm runmvc"
+    },
+    "dependencies": {
+        "three": "^0.120.0",
+        "uplot": "^1.6.31"
+    },
+    "devDependencies": {
+        "@redfish/leafletelementoverlay": "^1.2.2",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-terser": "^0.1.0",
+        "@turf/turf": "^6.5.0",
+        "clean-jsdoc-theme": "v4.2.18",
+        "esm": "^3.2.25",
+        "http-server": "^14.1.1",
+        "jsdoc": "4.0.2",
+        "live-server": "^1.2.2",
+        "npm-run-all": "^4.1.5",
+        "rollup": "^3.2.5",
+        "rollup-plugin-cleanup": "^3.2.1",
+        "shx": "^0.3.4"
+    }
+}

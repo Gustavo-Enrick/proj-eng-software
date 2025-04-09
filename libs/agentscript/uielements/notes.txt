@@ -1,0 +1,129 @@
+Examples:
+
+* Buttons
+start  anim.start()
+stop  anim.stop()
+reset  reset()
+downloadJson  util.downloadJsonModule(json, 'elements.js')
+downloadCanvas  view.downloadCanvas()
+
+* Slider
+speed
+model.speed = value
+0 10 1 1
+
+fps
+anim.setFps(value)
+0 60 1 30
+
+* Checkbox
+pause
+checked ? anim.stop() : anim.start()
+
+run
+checkbox.checked ? anim.start() : anim.stop()
+
+* Dropdown
+shape
+view.drawOptions.turtlesShape = value
+circle, dart, person, bug
+bug
+
+* Monitor
+ticks
+model.ticks
+
+
+=======================================
+
+try {
+    // values available within the command
+    const { model, view, anim, reset, util, json } = ui
+    eval(jsonElement.command)
+} catch (error) {
+    console.error('Command execution failed: ', error)
+}
+
+=======================================
+
+view.reset(value)
+view.drawOptions.turtlesSize = value
+
+view.downloadCanvas()
+util.downloadJsonModule(json)
+
+    window.selectedElementId = wrapper.dataset.id
+    window.selectedWrapper = wrapper
+wrapper.dataset.id
+
+=======================================
+To convert any of the view2/ demos:
+Add: import * as UI from 'https://code.agentscript.org/uielements/uielements.js'
+Set anim steps to -1
+Add a bit of boiler plate:
+
+
+=======================================
+const sliderValue = range.value; // Gets the current value of the slider
+
+const isChecked = checkbox.checked; // true or false
+
+const dropdownValue = select.value; // Gets the selected value
+
+range.value checkbox.checked select.value
+
+
+ToDo
+* Delete: Gets called via pass through?
+* Show: Show/log() the form key/val pairs.
+* Unified value: range.value, checkbox.checked, select.value => value
+
+Fixed
+* Text Highlighting: Stop dragging within text being selected (user-select css).
+* Monitor: Remove command field, Monitor just need a variable/fcn to watch.
+* Form Label: Replace "Initialize Element" with name of type: Button, Slider, ...
+* Form Label: styled the name to be bold, centered, background gray
+
+
+
+Oct 8: cleanup from chat json
+- uielements.js
+    - include window.ui object
+    - fill window.ui with 3 exports: {cancel, showPopup, submitForm}
+    - set window.ui.json to empty array
+- uielements.html:
+    - import './uielements.js';
+    - add {model, view, anim} to window.ui object
+    - add back ants model
+- uielements.css:
+    - styling for body & #modelDiv (used by ants model)
+    - user-select: none;
+
+
+Before we used an id: Date().getTime() so that deletions could work. Lets do that.
+Also lets add the rest of the json entries for the given type.
+Is there a reason to add an empty command entry for output elements? If not, lets leave it out.
+
+The json is created properly and the elements are created, but the elements no longer work:
+- delete with double click no longer creates an alert
+- click on elements no longer run the command
+- output elements no longer show the monitored values
+
+It still doesn't work.
+cliccking on a checkbox gives this error:
+    uielements.js:367 Command failed: ReferenceError: checkbox is not defined
+double click: only the placeholder works. for some reason e.ctrlKey fails.
+(if i remove the placeholder check and do not use ctrlKey use, the delete dialog works)
+
+Only json works:
+1: element deletion does not work unless i remove the ctrlKey check.
+2: commands do not execute
+3: output monitoring does not work and does not show the text area for the value
+4: json management works
+
+button: ok
+checkbox: ok
+slider: doesn't work and label should be on top of slider
+dropdown: doesn't work
+monitor: doesn't work: label is "loading.." and shows ticks
+

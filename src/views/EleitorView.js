@@ -1,10 +1,10 @@
-import * as util from "../../node_modules/agentscript/src/utils.js";
-import TwoDraw from "../../node_modules/agentscript/src/TwoDraw.js";
-import Animator from "../../node_modules/agentscript/src/Animator.js";
-import GUI from "../../node_modules/agentscript/src/GUI.js";
+import * as util from "../../libs/agentscript/src/utils.js";
+import TwoDraw from "../../libs/agentscript/src/TwoDraw.js";
+import Animator from "../../libs/agentscript/src/Animator.js";
+import GUI from "../../libs/agentscript/src/GUI.js";
 import Model from "../models/EleitorModel.js";
 import CronometroService from "../services/CronometroService.js";
-import Color from "../../node_modules/agentscript/src/Color.js";
+import Color from "../../libs/agentscript/src/Color.js";
 
 //Dimensões do mapa
 const worldOpts = {
@@ -18,6 +18,7 @@ const worldOpts = {
 const agentOptions = {
   lulista: 1,
   bolsonarista: 1,
+  arthurista: 1,
   eleitor: 100,
   velocidade: 0.5,
 };
@@ -64,6 +65,9 @@ const gui = new GUI({
   },
   Bolsonaro: {
     monitor: [model, "Bolsonarista"],
+  },
+  ArthurVal: {
+    monitor: [model, "Arthurista"],
   },
   Cidadao: {
     monitor: [model, "Eleitor"],
