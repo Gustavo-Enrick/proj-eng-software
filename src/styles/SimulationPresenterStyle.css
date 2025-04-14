@@ -1,0 +1,11 @@
+body{
+    background-color: gray;
+}
+.container{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    align-content: center;
+    justify-content: space-around;
+    padding: 40px;
+}

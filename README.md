@@ -9,7 +9,6 @@ A simulação será dividida em quatro campos, cada um representando um dos cand
 - **Luiz Inácio Lula da Silva (Lula)**
 - **Jair Messias Bolsonaro (Bolsonaro)**
 - **Arthur Moledo do Val (Arthur do Val)**
-- **Nivaldo Batista Lima (Gusttavo Lima)**
 
 Cada candidato terá um número inicial de eleitores e participará ativamente da competição pela base eleitoral.
 
