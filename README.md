@@ -23,3 +23,6 @@ Cada candidato terá um número inicial de eleitores e participará ativamente d
 - **HTML**
 - **CSS**
 - **JavaScript**
+
+## Link para acesso do projeto
+[Projeto eleição](https://gustavo-enrick.github.io/proj-eng-software/)
