@@ -28,7 +28,6 @@ body {
   flex-direction: column;
   gap: 15px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-
   overflow-y: auto; /* permite rolagem vertical */
   max-height: 100vh; /* limita a altura da tela */
   position: sticky;
@@ -61,18 +60,14 @@ body {
 .sidebar button {
   margin-top: 10px;
   padding: 10px;
-  background-color: #0077cc;
+  /* background-color: #0077cc; */
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 1em;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-bottom: 3rem;
-}
-
-.sidebar button:hover {
-  background-color: #005fa3;
+  /* margin-bottom: 3rem; */
 }
 
 /* Estilo do wrapper */
@@ -305,4 +300,68 @@ body {
 .modal-body .linha span.valor {
   font-weight: bold;
   color: inherit; /* Herdado da cor da borda */
+}
+
+.accordion-toggle {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  /* border: none; */
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.accordion-toggle:hover {
+  background-color: #0056b3;
+}
+
+.accordion-content {
+  display: none;
+  padding: 10;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.accordion-content.active {
+  display: block;
+  padding: 10px;
+}
+
+.botoes-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.btn-iniciar {
+  background-color: #28a745; /* verde */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-iniciar:hover {
+  background-color: #218838;
+}
+
+.btn-reiniciar {
+  background-color: #b83e28; /* amarelo */
+  color: black;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-reiniciar:hover {
+  background-color: #aa3723;
 }
