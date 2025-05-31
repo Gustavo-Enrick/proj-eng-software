@@ -210,13 +210,18 @@ class EleitorModel extends Model {
       candidato = this.arthurVal;
     }
 
-    //Se estiver próximo de um dos candidatos: converter este eleitor
+    //Evento aleatório: Quando não tiver cidadão, os eleitores começam a se converter
     if (candidato !== null && this.cidadao.length <= 0) {
       if (this.permitirReconversao(candidato, turtle)) {
         this.converterEleitor(turtle, candidato);
       }
     } else {
-      if (this.permitirReconversao(this.cidadao, turtle) && (this.Timer.Segundos >= this.Duracao / 4) && (this.Timer.Segundos <= this.Duracao / 2)) {
+      //Evento aleatório: Entre 1/4 e 1/2 da duração da simulação, os eleitores podem virar cidadao novamente
+      if (
+        this.permitirReconversao(this.cidadao, turtle) &&
+        this.Timer.Segundos >= this.Duracao / 4 &&
+        this.Timer.Segundos <= this.Duracao / 2
+      ) {
         this.converterEleitor(turtle, this.cidadao);
       }
 

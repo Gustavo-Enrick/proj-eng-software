@@ -18,8 +18,32 @@ const patchOptions = {
 
 let model, view, animation;
 
-const btnReiniciar = document.getElementById("btnReiniciar");
 
+//Configurações dos inputs de velocidade
+const rangeInputL = document.getElementById("velocidadeRangeL");
+const velocidadeSpanL = document.getElementById("velocidadeValorL");
+rangeInputL.addEventListener("input", () => {
+  velocidadeSpanL.textContent = parseFloat(rangeInputL.value).toFixed(1);
+});
+const rangeInputB = document.getElementById("velocidadeRangeB");
+const velocidadeSpanB = document.getElementById("velocidadeValorB");
+rangeInputB.addEventListener("input", () => {
+  velocidadeSpanB.textContent = parseFloat(rangeInputB.value).toFixed(1);
+});
+const rangeInputA = document.getElementById("velocidadeRangeA");
+const velocidadeSpanA = document.getElementById("velocidadeValorA");
+rangeInputA.addEventListener("input", () => {
+  velocidadeSpanA.textContent = parseFloat(rangeInputA.value).toFixed(1);
+});
+const rangeInputC = document.getElementById("velocidadeRangeC");
+const velocidadeSpanC = document.getElementById("velocidadeValorC");
+rangeInputC.addEventListener("input", () => {
+  velocidadeSpanC.textContent = parseFloat(rangeInputC.value).toFixed(1);
+});
+
+
+//Configuração do botão de Reiniciar
+const btnReiniciar = document.getElementById("btnReiniciar");
 btnReiniciar.addEventListener("click", () => {
   if (animation) {
     animation.stop();
@@ -48,29 +72,7 @@ btnReiniciar.addEventListener("click", () => {
   document.getElementById("velocidadeValorC").textContent = "0.5";
 });
 
-const historicoResultados = [];
-
-const rangeInputL = document.getElementById("velocidadeRangeL");
-const velocidadeSpanL = document.getElementById("velocidadeValorL");
-rangeInputL.addEventListener("input", () => {
-  velocidadeSpanL.textContent = parseFloat(rangeInputL.value).toFixed(1);
-});
-const rangeInputB = document.getElementById("velocidadeRangeB");
-const velocidadeSpanB = document.getElementById("velocidadeValorB");
-rangeInputB.addEventListener("input", () => {
-  velocidadeSpanB.textContent = parseFloat(rangeInputB.value).toFixed(1);
-});
-const rangeInputA = document.getElementById("velocidadeRangeA");
-const velocidadeSpanA = document.getElementById("velocidadeValorA");
-rangeInputA.addEventListener("input", () => {
-  velocidadeSpanA.textContent = parseFloat(rangeInputA.value).toFixed(1);
-});
-const rangeInputC = document.getElementById("velocidadeRangeC");
-const velocidadeSpanC = document.getElementById("velocidadeValorC");
-rangeInputC.addEventListener("input", () => {
-  velocidadeSpanC.textContent = parseFloat(rangeInputC.value).toFixed(1);
-});
-
+//Comfiguração do botaão de Iniciar
 document.getElementById("formSimulacao").addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -120,6 +122,7 @@ document.getElementById("formSimulacao").addEventListener("submit", (e) => {
   util.toWindow({ util, model, view, animation });
 });
 
+//Atualzação nos valores quantitativos em tempo real
 function atualizarMonitor() {
   if (!model) return;
 
@@ -136,6 +139,8 @@ function atualizarMonitor() {
   );
 }
 
+//Resultado das simulações
+const historicoResultados = [];
 function salvarResultadoFinal() {
   const agentes = model.turtles;
   const contagem = {
