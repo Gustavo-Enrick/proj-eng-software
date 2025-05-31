@@ -1,29 +1,48 @@
 import Model from "../../libs/agentscript/src/Model.js";
 import * as util from "../../libs/agentscript/src/utils.js";
+import CronometroService from "../services/CronometroService.js";
 
 class EleitorModel extends Model {
-  Lulista;
-  Bolsonarista;
-  Arthurista;
-  Eleitor;
-  Velocidade;
+  nOfLula;
+  nOfBolsonaro;
+  nOfArthur;
+  nOfCidadao;
+
+  VelLula;
+  VelBolsonaro;
+  VelArthur;
+  VelCidadao;
+
   TxConversaoLula;
   TxConversaoBolsonaro;
   TxConversaoArthur;
 
+  Timer;
+  Duracao;
+
   constructor(agentOptions, worldOptions = undefined) {
     super(worldOptions);
 
-    this.Lulista = agentOptions.lulista;
-    this.Bolsonarista = agentOptions.bolsonarista;
-    this.Arthurista = agentOptions.arthurista;
-    this.Eleitor = agentOptions.eleitor;
+    this.nOfLula = agentOptions.nOfLula;
+    this.nOfBolsonaro = agentOptions.nOfBolsonaro;
+    this.nOfArthur = agentOptions.nOfArthur;
+    this.nOfCidadao = agentOptions.nOfCidadao;
 
-    this.Velocidade = agentOptions.velocidade;
+    this.VelLula = agentOptions.velLula;
+    this.VelBolsonaro = agentOptions.velBolsonaro;
+    this.VelArthur = agentOptions.velArthur;
+    this.VelCidadao = agentOptions.velCidadao;
 
-    this.TxConversaoLula = 40;
-    this.TxConversaoBolsonaro = 30;
-    this.TxConversaoArthur = 50;
+    this.TxConversaoLula = agentOptions.txConversaoLula;
+    this.TxConversaoBolsonaro = agentOptions.txConversaoBolsonaro;
+    this.TxConversaoArthur = agentOptions.txConversaoArthur;
+
+    console.log(this.TxConversaoLula);
+    console.log(this.TxConversaoBolsonaro);
+    console.log(this.TxConversaoArthur);
+
+    this.Timer = new CronometroService();
+    this.Duracao = agentOptions.duracao;
   }
 
   //Inicializar raças
@@ -33,7 +52,7 @@ class EleitorModel extends Model {
     this.turtleBreeds("lula bolsonaro arthurVal cidadao");
 
     //Lula
-    this.patches.nOf(this.Lulista).ask((p) => {
+    this.patches.nOf(this.nOfLula).ask((p) => {
       p.sprout(1, this.lula, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
@@ -41,7 +60,7 @@ class EleitorModel extends Model {
     });
 
     //Bolsonaro
-    this.patches.nOf(this.Bolsonarista).ask((p) => {
+    this.patches.nOf(this.nOfBolsonaro).ask((p) => {
       p.sprout(1, this.bolsonaro, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
@@ -49,7 +68,7 @@ class EleitorModel extends Model {
     });
 
     //Arthur Val
-    this.patches.nOf(this.Arthurista).ask((p) => {
+    this.patches.nOf(this.nOfArthur).ask((p) => {
       p.sprout(1, this.arthurVal, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
@@ -57,7 +76,7 @@ class EleitorModel extends Model {
     });
 
     //Cidadao
-    this.patches.nOf(this.Eleitor).ask((p) => {
+    this.patches.nOf(this.nOfCidadao).ask((p) => {
       p.sprout(1, this.cidadao, (t) => {
         t.atEdge = "bounce";
         t.rotate(45);
@@ -69,23 +88,25 @@ class EleitorModel extends Model {
   //Configuração de movimentação
   //----------------------------------------------------------------------------------------
   step() {
+    this.Timer.startCron();
+
     this.bolsonaro.ask((b) => {
-      b.forward(this.Velocidade);
+      b.forward(this.VelBolsonaro);
       this.walkCandidato(b);
     });
 
     this.lula.ask((l) => {
-      l.forward(this.Velocidade);
+      l.forward(this.VelLula);
       this.walkCandidato(l);
     });
 
     this.arthurVal.ask((a) => {
-      a.forward(this.Velocidade);
+      a.forward(this.VelArthur);
       this.walkCandidato(a);
     });
 
     this.cidadao.ask((c) => {
-      c.forward(this.Velocidade);
+      c.forward(this.VelCidadao);
       this.walkEleitor(c);
     });
   }
@@ -130,9 +151,9 @@ class EleitorModel extends Model {
     if (candidato !== null && this.cidadao.length > 0) {
       let conversao = util.randomInt(101);
 
-      let conversaoCandidato = this.retornarTaxaConversao(candidato) * 0.1;
+      let conversaoCandidato = this.retornarTaxaConversao(candidato); // * 0.1;
 
-      if (conversao <= conversaoCandidato) {
+      if (conversao <= conversaoCandidato && conversaoCandidato > 0) {
         this.converterEleitor(turtle, candidato);
       }
     } else {
@@ -170,7 +191,7 @@ class EleitorModel extends Model {
     ) {
       candidato = this.lula;
     }
-    
+
     //Está próximo do eleitor Bolsonaro?
     if (
       turtle.breed !== this.bolsonaro &&
@@ -195,6 +216,10 @@ class EleitorModel extends Model {
         this.converterEleitor(turtle, candidato);
       }
     } else {
+      if (this.permitirReconversao(this.cidadao, turtle) && (this.Timer.Segundos >= this.Duracao / 4) && (this.Timer.Segundos <= this.Duracao / 2)) {
+        this.converterEleitor(turtle, this.cidadao);
+      }
+
       turtle.heading += util.randomCentered(30);
     }
   }
@@ -254,13 +279,13 @@ class EleitorModel extends Model {
   converterEleitor(turtle, candidato) {
     turtle.hatch(1, candidato, turtle.die());
 
-    this.Bolsonarista = this.bolsonaro.length;
+    this.nOfBolsonaro = this.bolsonaro.length;
 
-    this.Lulista = this.lula.length;
+    this.nOfLula = this.lula.length;
 
-    this.Arthurista = this.arthurVal.length;
+    this.nOfArthur = this.arthurVal.length;
 
-    this.Eleitor = this.cidadao.length;
+    this.nOfCidadao = this.cidadao.length;
   }
   //----------------------------------------------------------------------------------------
 

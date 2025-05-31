@@ -7,7 +7,157 @@
   </head>
   <body>
     <div class="container">
+      <!-- Menu lateral -->
+      <aside class="sidebar">
+        <h2>Configurações</h2>
+        <form id="formSimulacao">
+   <div class="campo-par">
+    <div class="campo-individual">
+      <label for="nOfLula">QT. de Lulistas</label>
+      <input type="number" id="nOfLula" name="nOfLula" value="1" min="0" max="10" />
+    </div>
+    <div class="campo-individual">
+      <label for="txConversaoLula">Taxa Conversão (%)</label>
+      <input type="number" id="txConversaoLula" name="txConversaoLula" value="50" min="0" max="100" />
+    </div>
+  </div>
+
+  <div class="campo-par">
+    <div class="campo-individual">
+      <label for="nOfBolsonaro">QT. de Bolsonaristas</label>
+      <input type="number" id="nOfBolsonaro" name="nOfBolsonaro" value="1" min="0" max="10" />
+    </div>
+    <div class="campo-individual">
+      <label for="txConversaoBolsonaro">Taxa Conversão (%)</label>
+      <input type="number" id="txConversaoBolsonaro" name="txConversaoBolsonaro" value="50" min="0" max="100" />
+    </div>
+  </div>
+
+  <div class="campo-par">
+    <div class="campo-individual">
+      <label for="nOfArthur">QT. de Arthuristas</label>
+      <input type="number" id="nOfArthur" name="nOfArthur" value="1" min="0" max="10" />
+    </div>
+    <div class="campo-individual">
+      <label for="txConversaoArthur">Taxa Conversão (%)</label>
+      <input type="number" id="txConversaoArthur" name="txConversaoArthur" value="50" min="0" max="100" />
+    </div>
+  </div>
+
+  <div class="campo-par">
+    <div class="campo-individual">
+      <label for="nOfCidadao">QT. de Cidadãos</label>
+      <input type="number" id="nOfCidadao" name="nOfCidadao" value="100" min="0" max="100" />
+    </div>
+  </div>
+          <label>
+            Velocidade Lula:
+            <div class="slider-wrapper">
+              <input
+                type="range"
+                name="velLula"
+                id="velocidadeRangeL"
+                min="0.5"
+                max="5"
+                step="0.5"
+                value="0.5"
+              />
+              <span id="velocidadeValorL">0.5</span>x
+            </div>
+          </label>
+          <label>
+            Velocidade Bolsonaro:
+            <div class="slider-wrapper">
+              <input
+                type="range"
+                name="velBolsonaro"
+                id="velocidadeRangeB"
+                min="0.5"
+                max="5"
+                step="0.5"
+                value="0.5"
+              />
+              <span id="velocidadeValorB">0.5</span>x
+            </div>
+          </label>
+          <label>
+            Velocidade Arthur do Val:
+            <div class="slider-wrapper">
+              <input
+                type="range"
+                name="velArthur"
+                id="velocidadeRangeA"
+                min="0.5"
+                max="5"
+                step="0.5"
+                value="0.5"
+              />
+              <span id="velocidadeValorA">0.5</span>x
+            </div>
+          </label>
+          <label>
+            Velocidade Cidadão:
+            <div class="slider-wrapper">
+              <input
+                type="range"
+                name="velCidadao"
+                id="velocidadeRangeC"
+                min="0.5"
+                max="5"
+                step="0.5"
+                value="0.5"
+              />
+              <span id="velocidadeValorC">0.5</span>x
+            </div>
+          </label>
+          <label
+            >Duração da Simulação(s):
+            <input type="number" name="duracao" value="120" min="1" />
+          </label>
+          <button type="submit">Iniciar Simulação</button>
+          <button type="button" id="btnReiniciar">Reiniciar Simulação</button>
+        </form>
+
+        <div id="monitorContainer">
+          <h2>Monitor</h2>
+          <div id="monitorGrid">
+            <div class="monitorBox">
+              <div class="label">Lulistas</div>
+              <div class="value" id="monitorLula">0</div>
+            </div>
+            <div class="monitorBox">
+              <div class="label">Bolsonaristas</div>
+              <div class="value" id="monitorBolsonaro">0</div>
+            </div>
+            <div class="monitorBox">
+              <div class="label">Arthuristas</div>
+              <div class="value" id="monitorArthur">0</div>
+            </div>
+            <div class="monitorBox">
+              <div class="label">Cidadãos</div>
+              <div class="value" id="monitorCidadao">0</div>
+            </div>
+          </div>
+          <div class="monitorBox">
+            <div class="label">Tempo (s)</div>
+            <div class="value" id="monitorTempo">0</div>
+          </div>
+        </div>
+
+        <!-- Div dos Resultados -->
+        <div id="resultadoContainer">
+          <h2>Resultados das Simulações</h2>
+          <ul id="resultadosLista"></ul>
+        </div>
+      </aside>
+
+      <!-- Div do modelo -->
       <div id="modelDiv"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modalResultado">
+      <div id="modalMensagem"></div>
     </div>
   </body>
 </html>

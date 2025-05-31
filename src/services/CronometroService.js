@@ -1,11 +1,12 @@
 export default class CronometroService {
   Cron = 0;
   Segundos = 0;
-  Milisegundos = 0;
+  Milissegundos = 0;
+  Tempo = null;
 
   timer() {
-    if ((this.Milisegundos += 10) == 1000) {
-      this.Milisegundos = 0;
+    if ((this.Milissegundos += 10) >= 1000) {
+      this.Milissegundos = 0;
       this.Segundos++;
     }
   }

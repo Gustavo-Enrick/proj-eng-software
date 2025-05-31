@@ -1,11 +1,308 @@
-body{
-    background-color: gray;
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.container{
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    align-content: center;
-    justify-content: space-around;
-    padding: 40px;
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Container principal com layout horizontal */
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Menu lateral */
+.sidebar {
+  width: 400px;
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+
+  overflow-y: auto; /* permite rolagem vertical */
+  max-height: 100vh; /* limita a altura da tela */
+  position: sticky;
+  top: 0;
+}
+
+.sidebar h2 {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  color: #0077cc;
+}
+
+.sidebar label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95em;
+  color: #555;
+}
+
+.sidebar input[type="number"] {
+  margin-top: 5px;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+/* Botão iniciar */
+.sidebar button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 3rem;
+}
+
+.sidebar button:hover {
+  background-color: #005fa3;
+}
+
+/* Estilo do wrapper */
+.slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  margin-bottom: 1rem;
+}
+
+/* Estilo do input tipo range */
+.sidebar input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+/* Estilo da "bolinha" (thumb) */
+.sidebar input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0077cc;
+  cursor: pointer;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  transition: background 0.3s ease;
+}
+
+.sidebar input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0077cc;
+  cursor: pointer;
+}
+
+.campo-par {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.campo-individual {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.campo-individual label {
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+}
+
+/* Valor ao lado */
+#velocidadeValor {
+  min-width: 40px;
+  text-align: left;
+  font-weight: bold;
+  color: #0077cc;
+}
+
+/* Container geral do monitor */
+#monitorContainer {
+  margin-top: 20px;
+  padding: 10px;
+  border: 2px solid #0077cc;
+  border-radius: 10px;
+  background-color: #eaf6ff;
+  box-shadow: 0 2px 6px rgba(0, 119, 204, 0.15);
+    margin-bottom: 1rem;
+}
+
+/* Título do monitor */
+#monitorContainer h2 {
+  font-size: 1.3em;
+  margin-bottom: 12px;
+  color: #0077cc;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Grid para as caixas */
+#monitorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+}
+
+/* Caixa individual */
+.monitorBox {
+  background-color: #ffffff;
+  border: 1.5px solid #0077cc;
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 119, 204, 0.2);
+  transition: box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.monitorBox:hover {
+  box-shadow: 0 3px 10px rgba(0, 119, 204, 0.35);
+}
+
+/* Texto do título dentro da caixa */
+.monitorBox .label {
+  font-size: 0.85em;
+  color: #555;
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Valor principal dentro da caixa */
+.monitorBox .value {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: #0077cc;
+  user-select: none;
+}
+
+#resultadoContainer {
+  margin-top: 20px;
+  padding-right: 10px;
+}
+
+#resultadosLista {
+  max-height: 400px; /* ou o valor que desejar */
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+#resultadosLista li {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+  font-size: 0.95em;
+}
+
+/* Área da simulação */
+#modelDiv {
+  flex: 1;
+  background-color: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+#modelDiv canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#modalResultado {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 350px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  border: 4px solid transparent; /* Cor da borda setada dinamicamente via JS */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 14px 40px 14px 40px; /* espaçamento para botão fechar */
+  color: white;
+  font-size: 1.3rem;
+  font-weight: bold;
+  background-color: gray; /* será alterado dinamicamente */
+  user-select: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+#modalFechar {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+.modal-body {
+  padding: 20px 30px;
+  color: #333;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-body .linha {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.modal-body .linha span.valor {
+  font-weight: bold;
+  color: inherit; /* Herdado da cor da borda */
 }
