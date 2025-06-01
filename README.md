@@ -18,11 +18,17 @@ Cada candidato começa com a mesma quantidade de eleitores e disputa a ampliaç�
 
 ## 📜 Regras da Simulação
 
-- **📊 Distribuição Inicial de Eleitores**: Todos os candidatos começam com o mesmo número de eleitores.
-- **🎨 Identificação Visual**: Cada candidato é representado por uma cor específica.
-- **🔁 Interação entre Eleitores**: Durante a simulação, eleitores podem migrar de um candidato para outro com base em simulações de influência política.
-- **🎲 Sorteios Bimestrais**: A cada 2 meses, um sorteio aleatório atribui novos eleitores a um dos candidatos, simulando eventos imprevisíveis como escândalos ou aumento de popularidade.
-- **🏁 Critério de Vitória**: O candidato com a maior base eleitoral ao final de 12 meses de simulação será o vencedor.
+- **📊 Quantidade Inicial de Eleitores**: Uma quantidade inicial de eleitores é definida no início da simulação.
+
+- **🎨 Identificação Visual**: Cada candidato é representado por uma cor específica para facilitar a visualização durante a simulação.
+
+- **🔁 Interação entre Eleitores**: Ao longo da simulação, os eleitores podem migrar de um candidato para outro com base em mecanismos de influência política simulada.
+
+- **🎲 Conversão de Eleitores**: Eleitores já convertidos (isto é, que apoiam um candidato) podem mudar sua preferência para outro candidato.
+
+- **⏳ Retorno à Neutralidade**: Conforme o tempo total da aplicação, quando a simulação atinge 25% e 50% do tempo total (ou seja, após 3 e 6 meses), uma parte dos eleitores convertidos pode voltar ao estado neutro, tornando-se novamente suscetíveis à influência.
+
+- **🏁 Critério de Vitória**: O candidato com a maior base eleitoral ao final da simulação será declarado vencedor.
 
 ---
 
@@ -30,7 +36,8 @@ Cada candidato começa com a mesma quantidade de eleitores e disputa a ampliaç�
 
 - HTML  
 - CSS  
-- JavaScript  
+- JavaScript
+- Biblioteca agent script js
 
 ---
 
