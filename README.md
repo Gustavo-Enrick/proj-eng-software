@@ -29,7 +29,7 @@ Cada candidato começa com uma quantidade definifinida pelo usuário.
 
 ## 📜 Eventos aleatórios
 
-- **🔁 Eleitores virando sem partido (cidadão)**: Entre 1/4 e 1/2 da duração total da simulação, existe a possibilidade aleatória de um eleitor tornar-se cidadão.
+- **🔁 Eleitores virando sem partido (cidadão)**: Entre 1/3 e 1/2 da duração total da simulação, existe a possibilidade aleatória de um eleitor tornar-se cidadão.
 - **🔁 Conversão entre eleitores**: Após todos os cidadãos estarem convertidos, existe a possibilidade dos eleitores se converterem entre os candidatos.
 
 ---

@@ -85,15 +85,16 @@ class EleitorModel extends Model {
   //----------------------------------------------------------------------------------------
   step() {
     this.Timer.startCron();
-
-    this.bolsonaro.ask((b) => {
-      b.forward(this.VelBolsonaro);
-      this.walkCandidato(b);
-    });
+    let conversao = util.randomInt(101);
 
     this.lula.ask((l) => {
       l.forward(this.VelLula);
       this.walkCandidato(l);
+    });
+
+    this.bolsonaro.ask((b) => {
+      b.forward(this.VelBolsonaro);
+      this.walkCandidato(b);
     });
 
     this.arthurVal.ask((a) => {
@@ -103,14 +104,14 @@ class EleitorModel extends Model {
 
     this.cidadao.ask((c) => {
       c.forward(this.VelCidadao);
-      this.walkEleitor(c);
+      this.walkEleitor(c, conversao);
     });
   }
   //----------------------------------------------------------------------------------------
 
   //Movimentação dos eleitores: cidadao
   //----------------------------------------------------------------------------------------
-  walkEleitor(turtle) {
+  walkEleitor(turtle, conversao) {
     this.colisionWall(turtle);
 
     let candidato = null;
@@ -145,7 +146,7 @@ class EleitorModel extends Model {
 
     //Se estiver próximo de um dos candidatos: converter este eleitor
     if (candidato !== null && this.cidadao.length > 0) {
-      let conversao = util.randomInt(101);
+      // let conversao = util.randomInt(101);
 
       let conversaoCandidato = this.retornarTaxaConversao(candidato); // * 0.1;
 
@@ -155,8 +156,6 @@ class EleitorModel extends Model {
     } else {
       turtle.heading += util.randomCentered(30);
     }
-
-    candidato = null;
   }
   //----------------------------------------------------------------------------------------
 
@@ -170,8 +169,6 @@ class EleitorModel extends Model {
     if (closestCidadao && turtle.distance(closestCidadao) <= 10) {
       //Quando próximo, direcionar candidato para o eleitor
       turtle.face(closestCidadao);
-    } else {
-      turtle.heading += util.randomCentered(30);
     }
 
     let candidato = null;
@@ -211,18 +208,19 @@ class EleitorModel extends Model {
       if (this.permitirReconversao(candidato, turtle)) {
         this.converterEleitor(turtle, candidato);
       }
-    } else {
-      //Evento aleatório: Entre 1/4 e 1/2 da duração da simulação, os eleitores podem virar cidadao novamente
-      if (
-        this.permitirReconversao(this.cidadao, turtle) &&
-        this.Timer.Segundos >= this.Duracao / 4 &&
-        this.Timer.Segundos <= this.Duracao / 2
-      ) {
+    }
+
+    //Evento aleatório: Entre 1/3 e 1/2 da duração da simulação, os eleitores podem virar cidadao novamente
+    if (
+      this.Timer.Segundos >= this.Duracao / 3 &&
+      this.Timer.Segundos <= this.Duracao / 2
+    ) {
+      if (this.permitirReconversao(this.cidadao, turtle)) {
         this.converterEleitor(turtle, this.cidadao);
       }
-
-      turtle.heading += util.randomCentered(30);
     }
+
+    turtle.heading += util.randomCentered(30);
   }
   //----------------------------------------------------------------------------------------
 
@@ -244,17 +242,6 @@ class EleitorModel extends Model {
     let conversao = util.randomInt(101);
 
     if (conversao == 100 && turtle.breed !== candidato) {
-      permitir = true;
-    }
-
-    return permitir;
-  }
-
-  permitirConversao2(candidato, turtle) {
-    let permitir = false;
-    let conversao = util.randomInt(2);
-
-    if (conversao == 1) {
       permitir = true;
     }
 
