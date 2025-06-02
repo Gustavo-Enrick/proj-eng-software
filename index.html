@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
-    <title>Eleição 2025</title>
+    <title>Eleição 2026</title>
     <link rel="stylesheet" href="./src/styles/SimulationPresenterStyle.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <script type="module" src="./src/views/EleitorView.js"></script>
   </head>
   <script>
@@ -19,6 +23,18 @@
     <div class="container">
       <!-- Menu lateral -->
       <aside class="sidebar">
+        <button id="btnSobre" title="Sobre o projeto">
+          <i class="fas fa-info-circle"></i>
+        </button>
+        <h2>Agentes</h2>
+        <div class="agentes-container">
+          <div class="agentes-boxes">
+            <div class="agente-box red">Lula</div>
+            <div class="agente-box green">Bolsonaro</div>
+            <div class="agente-box blue">Arthur do Val</div>
+            <div class="agente-box gray">Cidadãos</div>
+          </div>
+        </div>
         <h2>Menu</h2>
         <!-- Configurações -->
         <button class="accordion-toggle">Configurações</button>
@@ -98,7 +114,6 @@
                 />
               </div>
             </div>
-
             <div class="campo-par">
               <div class="campo-individual">
                 <label for="nOfCidadao">Qt. de Cidadãos</label>
@@ -111,6 +126,12 @@
                   max="100"
                 />
               </div>
+            </div>
+            <div class="campo-individual">
+              <label
+                >Duração da Simulação (s):
+                <input type="number" name="duracao" value="120" min="1" />
+              </label>
             </div>
             <label>
               Velocidade Lula:
@@ -172,10 +193,6 @@
                 <span id="velocidadeValorC">0.5</span>x
               </div>
             </label>
-            <label
-              >Duração da Simulação (s):
-              <input type="number" name="duracao" value="120" min="1" />
-            </label>
           </div>
 
           <!-- Botões -->
@@ -230,4 +247,84 @@
       <div id="modalMensagem"></div>
     </div>
   </body>
+
+  <div id="modalSobre" class="modal" style="display: none">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #333; color: white">
+        <span class="modal-title">🗳️ Simulação Eleitoral Brasileira 2026</span>
+        <button id="fecharModalSobre" class="modal-close">&times;</button>
+      </div>
+      <div
+        class="modal-body"
+        style="
+          max-height: 400px;
+          overflow-y: auto;
+          text-align: left;
+          padding: 1em;
+        "
+      >
+        <h2>🎯 Objetivo</h2>
+        <p>
+          Criar uma simulação interativa do cenário hipotético das eleições
+          presidenciais brasileiras de 2026, com três candidatos competindo pela
+          preferência dos eleitores. A simulação será exibida por meio de uma
+          interface web, permitindo a visualização dinâmica do processo
+          eleitoral.
+        </p>
+
+        <hr />
+
+        <h2>🗺️ Cenário</h2>
+        <p>A simulação será dividida entre 3 candidatos à presidência:</p>
+        <ul>
+          <li><strong>Luiz Inácio Lula da Silva (Lula)</strong></li>
+          <li><strong>Jair Messias Bolsonaro (Bolsonaro)</strong></li>
+          <li><strong>Arthur Moledo do Val (Arthur do Val)</strong></li>
+        </ul>
+        <p>Cada candidato começa com uma quantidade definida pelo usuário.</p>
+
+        <hr />
+
+        <h2>📜 Regras da Simulação</h2>
+        <ul>
+          <li>
+            <strong>🎨 Identificação Visual</strong>: Cada candidato é
+            representado por uma cor específica: Lula vermelho, Bolsonaro verde
+            e Arthur do Val azul.
+          </li>
+          <li>
+            <strong>🔁 Interação entre Eleitores e Cidadãos</strong>: Durante a
+            simulação, cidadãos podem ser convertidos pelos eleitores de cada
+            presidente.
+          </li>
+          <li>
+            <strong>🏁 Critério de Vitória</strong>: O grupo de eleitores com
+            maior número ao final do tempo total de duração da simulação será o
+            vencedor.
+          </li>
+          <li>
+            <strong>🏁 Critério de Desempate</strong>: Se dois ou mais grupos de
+            eleitores empatarem, será adicionado 10 segundos na duração da
+            simulação até desempatar.
+          </li>
+        </ul>
+
+        <hr />
+
+        <h2>📜 Eventos aleatórios</h2>
+        <ul>
+          <li>
+            <strong>🔁 Eleitores virando sem partido (cidadão)</strong>: Entre
+            1/4 e 1/2 da duração total da simulação, existe a possibilidade
+            aleatória de um eleitor tornar-se cidadão.
+          </li>
+          <li>
+            <strong>🔁 Conversão entre eleitores</strong>: Após todos os
+            cidadãos estarem convertidos, existe a possibilidade dos eleitores
+            se converterem entre os candidatos.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </html>

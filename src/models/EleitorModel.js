@@ -37,10 +37,6 @@ class EleitorModel extends Model {
     this.TxConversaoBolsonaro = agentOptions.txConversaoBolsonaro;
     this.TxConversaoArthur = agentOptions.txConversaoArthur;
 
-    console.log(this.TxConversaoLula);
-    console.log(this.TxConversaoBolsonaro);
-    console.log(this.TxConversaoArthur);
-
     this.Timer = new CronometroService();
     this.Duracao = agentOptions.duracao;
   }

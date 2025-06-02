@@ -16,8 +16,20 @@ const patchOptions = {
   backgroundColor: Color.rgbaToPixel(0, 0, 0),
 };
 
-let model, view, animation;
+document.getElementById("btnSobre").addEventListener("click", () => {
+  document.getElementById("modalSobre").style.display = "flex";
+});
 
+document.getElementById("fecharModalSobre").addEventListener("click", () => {
+  document.getElementById("modalSobre").style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+  const modal = document.getElementById("modalSobre");
+  if (e.target === modal) modal.style.display = "none";
+});
+
+let model, view, animation;
 
 //Configurações dos inputs de velocidade
 const rangeInputL = document.getElementById("velocidadeRangeL");
@@ -40,7 +52,6 @@ const velocidadeSpanC = document.getElementById("velocidadeValorC");
 rangeInputC.addEventListener("input", () => {
   velocidadeSpanC.textContent = parseFloat(rangeInputC.value).toFixed(1);
 });
-
 
 //Configuração do botão de Reiniciar
 const btnReiniciar = document.getElementById("btnReiniciar");
@@ -110,7 +121,18 @@ document.getElementById("formSimulacao").addEventListener("submit", (e) => {
       view.draw();
       atualizarMonitor();
 
-      if (model.Timer.Segundos == agentOptions.duracao) {
+      const contagem = {
+        Lula: model.turtles.breeds.lula.length,
+        Bolsonaro: model.turtles.breeds.bolsonaro.length,
+        Arthur: model.turtles.breeds.arthurVal.length,
+      };
+
+      if (
+        model.Timer.Segundos == agentOptions.duracao &&
+        estaEmpatado(contagem)
+      ) {
+        agentOptions.duracao += 10;
+      } else if (model.Timer.Segundos == agentOptions.duracao) {
         animation.stop();
         salvarResultadoFinal();
       }
@@ -121,6 +143,16 @@ document.getElementById("formSimulacao").addEventListener("submit", (e) => {
 
   util.toWindow({ util, model, view, animation });
 });
+
+//Verifica o empate entre os eleitores
+function estaEmpatado(contagem) {
+  const valores = Object.values(contagem);
+  const max = Math.max(...valores);
+  const lideres = Object.entries(contagem).filter(
+    ([_, v]) => v === max && v !== 0
+  );
+  return lideres.length > 1; // Mais de um com o maior valor
+}
 
 //Atualzação nos valores quantitativos em tempo real
 function atualizarMonitor() {
@@ -149,9 +181,12 @@ function salvarResultadoFinal() {
     Arthur: agentes.breeds.arthurVal.length,
   };
 
-  const vencedor = Object.entries(contagem).reduce((a, b) =>
+  let vencedor = Object.entries(contagem).reduce((a, b) =>
     b[1] > a[1] ? b : a
   )[0];
+
+  if (contagem.Lula == 0 && contagem.Bolsonaro == 0 && contagem.Arthur == 0)
+    vencedor = "Ninguém";
 
   const resultado = {
     timestamp: new Date().toLocaleTimeString(),
@@ -168,6 +203,7 @@ function retornarQtEleitor(res) {
   if (res.vencedor == "Lula") return res.Lula;
   else if (res.vencedor == "Bolsonaro") return res.Bolsonaro;
   else if (res.vencedor == "Arthur") return res.Arthur;
+
   return 0;
 }
 
@@ -179,10 +215,10 @@ function renderizarResultados() {
 
   const ultimoResultado = historicoResultados[historicoResultados.length - 1];
 
-  let cor = "#333";
-  if (ultimoResultado.vencedor === "Lula") cor = "crimson";
+  let cor = "gray";
+  if (ultimoResultado.vencedor === "Lula") cor = "red";
   else if (ultimoResultado.vencedor === "Bolsonaro") cor = "green";
-  else if (ultimoResultado.vencedor === "Arthur") cor = "royalblue";
+  else if (ultimoResultado.vencedor === "Arthur") cor = "blue";
 
   historicoResultados
     .slice()

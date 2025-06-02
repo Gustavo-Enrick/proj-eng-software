@@ -1379,7 +1379,7 @@ export function setCtxImage(ctx, img) {
  */
 export function toWindow(obj) {
     Object.assign(window, obj)
-    console.log('toWindow:', Object.keys(obj).join(', '))
+    // console.log('toWindow:', Object.keys(obj).join(', '))
 }
 
 export function dump(model = window.model) {
