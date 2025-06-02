@@ -114,41 +114,11 @@ class EleitorModel extends Model {
   walkEleitor(turtle, conversao) {
     this.colisionWall(turtle);
 
-    let candidato = null;
-    const closestLula = this.closestNeighbor(turtle, this.lula);
-    const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
-    const closestArthurVal = this.closestNeighbor(turtle, this.arthurVal);
-
-    //Está próximo do eleitor Lula?
-    if (
-      turtle.breed !== this.lula &&
-      closestLula &&
-      turtle.distance(closestLula) <= 2
-    ) {
-      candidato = this.lula;
-    }
-    //Está próximo do eleitor Bolsonaro?
-    if (
-      turtle.breed !== this.bolsonaro &&
-      closestBolsonaro &&
-      turtle.distance(closestBolsonaro) <= 2
-    ) {
-      candidato = this.bolsonaro;
-    }
-    //Está próximo do eleitor Bolsonaro?
-    if (
-      turtle.breed !== this.arthurVal &&
-      closestArthurVal &&
-      turtle.distance(closestArthurVal) <= 2
-    ) {
-      candidato = this.arthurVal;
-    }
+    let candidato = this.retornarCandidatoProximo(turtle);
 
     //Se estiver próximo de um dos candidatos: converter este eleitor
     if (candidato !== null && this.cidadao.length > 0) {
-      // let conversao = util.randomInt(101);
-
-      let conversaoCandidato = this.retornarTaxaConversao(candidato); // * 0.1;
+      let conversaoCandidato = this.retornarTaxaConversao(candidato);
 
       if (conversao <= conversaoCandidato && conversaoCandidato > 0) {
         this.converterEleitor(turtle, candidato);
@@ -171,37 +141,7 @@ class EleitorModel extends Model {
       turtle.face(closestCidadao);
     }
 
-    let candidato = null;
-    const closestLula = this.closestNeighbor(turtle, this.lula);
-    const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
-    const closestArthurVal = this.closestNeighbor(turtle, this.arthurVal);
-
-    //Está próximo do eleitor Lula?
-    if (
-      turtle.breed !== this.lula &&
-      closestLula &&
-      turtle.distance(closestLula) <= 2
-    ) {
-      candidato = this.lula;
-    }
-
-    //Está próximo do eleitor Bolsonaro?
-    if (
-      turtle.breed !== this.bolsonaro &&
-      closestBolsonaro &&
-      turtle.distance(closestBolsonaro) <= 2
-    ) {
-      candidato = this.bolsonaro;
-    }
-
-    //Está próximo do eleitor Arthur?
-    if (
-      turtle.breed !== this.arthurVal &&
-      closestArthurVal &&
-      turtle.distance(closestArthurVal) <= 2
-    ) {
-      candidato = this.arthurVal;
-    }
+    let candidato = this.retornarCandidatoProximo(turtle);
 
     //Evento aleatório: Quando não tiver cidadão, os eleitores começam a se converter
     if (candidato !== null && this.cidadao.length <= 0) {
@@ -248,21 +188,6 @@ class EleitorModel extends Model {
     return permitir;
   }
 
-  //Capturar porcentagem de conversão
-  retornarTaxaReconversao(candidato, turtle) {
-    let taxaReconversao = 0;
-    let taxaConversaoCandidato = this.retornarTaxaConversao(candidato);
-    let taxaConversaoTurtle = this.retornarTaxaConversao(turtle.breed);
-
-    taxaReconversao = taxaConversaoCandidato - taxaConversaoTurtle;
-
-    if (taxaReconversao < 0) {
-      return -1;
-    }
-
-    return taxaReconversao;
-  }
-
   //Converter raça e adicionar valores no contador de convertidos
   converterEleitor(turtle, candidato) {
     turtle.hatch(1, candidato, turtle.die());
@@ -300,6 +225,40 @@ class EleitorModel extends Model {
     }
 
     return closest;
+  }
+
+  retornarCandidatoProximo(turtle) {
+    let candidato = null;
+    const closestLula = this.closestNeighbor(turtle, this.lula);
+    const closestBolsonaro = this.closestNeighbor(turtle, this.bolsonaro);
+    const closestArthurVal = this.closestNeighbor(turtle, this.arthurVal);
+
+    //Está próximo do eleitor Lula?
+    if (
+      turtle.breed !== this.lula &&
+      closestLula &&
+      turtle.distance(closestLula) <= 2
+    ) {
+      candidato = this.lula;
+    }
+    //Está próximo do eleitor Bolsonaro?
+    if (
+      turtle.breed !== this.bolsonaro &&
+      closestBolsonaro &&
+      turtle.distance(closestBolsonaro) <= 2
+    ) {
+      candidato = this.bolsonaro;
+    }
+    //Está próximo do eleitor Arthur?
+    if (
+      turtle.breed !== this.arthurVal &&
+      closestArthurVal &&
+      turtle.distance(closestArthurVal) <= 2
+    ) {
+      candidato = this.arthurVal;
+    }
+
+    return candidato;
   }
   //----------------------------------------------------------------------------------------
 

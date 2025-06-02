@@ -19,7 +19,6 @@ const patchOptions = {
 document.getElementById("btnSobre").addEventListener("click", () => {
   document.getElementById("modalSobre").style.display = "flex";
 });
-
 document.getElementById("fecharModalSobre").addEventListener("click", () => {
   document.getElementById("modalSobre").style.display = "none";
 });
@@ -154,7 +153,7 @@ function estaEmpatado(contagem) {
   return lideres.length > 1; // Mais de um com o maior valor
 }
 
-//Atualzação nos valores quantitativos em tempo real
+//Atualização nos valores quantitativos em tempo real
 function atualizarMonitor() {
   if (!model) return;
 
@@ -207,6 +206,7 @@ function retornarQtEleitor(res) {
   return 0;
 }
 
+//Modal de Resultado
 function renderizarResultados() {
   const lista = document.getElementById("resultadosLista");
   lista.innerHTML = "";
