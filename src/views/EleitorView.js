@@ -180,8 +180,10 @@ function tocarMusicaCandidato(resultado) {
   let fim = 0;
   if (resultado === "Lula") {
     audio.src = "./assets/lula.mp3";
+    inicio = 16;
   } else if (resultado === "Bolsonaro") {
     audio.src = "./assets/bolsonaro.mp3";
+    inicio = 39;
   } else if (resultado === "Arthur") {
     audio.src = "./assets/arthur.mp3";
     inicio = 55;
