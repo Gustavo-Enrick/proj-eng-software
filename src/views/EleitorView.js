@@ -60,6 +60,8 @@ btnReiniciar.addEventListener("click", () => {
     animation = null;
   }
 
+  audio.pause();
+
   model = null;
   if (view) {
     document.getElementById("modelDiv").innerHTML = "";
@@ -82,9 +84,10 @@ btnReiniciar.addEventListener("click", () => {
   document.getElementById("velocidadeValorC").textContent = "0.5";
 });
 
-//Comfiguração do botaão de Iniciar
+//Configuração do botão de Iniciar
 document.getElementById("formSimulacao").addEventListener("submit", (e) => {
   e.preventDefault();
+  audio.pause();
 
   const modalBox = document.getElementById("modalResultado");
   modalBox.style.display = "none";
@@ -170,6 +173,30 @@ function atualizarMonitor() {
   );
 }
 
+//Tocar música do candidato vencedor
+const audio = new Audio();
+function tocarMusicaCandidato(resultado) {
+  let inicio = 0;
+  let fim = 0;
+  if (resultado === "Lula") {
+    audio.src = "./assets/lula.mp3";
+  } else if (resultado === "Bolsonaro") {
+    audio.src = "./assets/bolsonaro.mp3";
+  } else if (resultado === "Arthur") {
+    audio.src = "./assets/arthur.mp3";
+    inicio = 55;
+    fim = 67;
+  } else {
+    audio.src = "./assets/empate.mp3";
+  }
+
+  audio.currentTime = inicio;
+
+  audio.play().catch((err) => {
+    console.error("Erro ao tocar música:", err);
+  });
+}
+
 //Resultado das simulações
 const historicoResultados = [];
 function salvarResultadoFinal() {
@@ -193,6 +220,7 @@ function salvarResultadoFinal() {
     ...contagem,
   };
 
+  tocarMusicaCandidato(vencedor);
   retornarQtEleitor(resultado);
   historicoResultados.push(resultado);
   renderizarResultados();
@@ -267,5 +295,6 @@ function renderizarResultados() {
   const btnFechar = document.getElementById("modalFechar");
   btnFechar.onclick = () => {
     modalBox.style.display = "none";
+    audio.pause();
   };
 }
