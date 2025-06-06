@@ -175,6 +175,7 @@ function atualizarMonitor() {
 
 //Tocar música do candidato vencedor
 const audio = new Audio();
+audio.volume = 0.2;
 function tocarMusicaCandidato(resultado) {
   let inicio = 0;
   let fim = 0;
